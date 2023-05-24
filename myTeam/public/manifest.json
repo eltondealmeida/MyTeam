@@ -1,6 +1,6 @@
 {
-  "short_name": "Meu time",
-  "name": "Meu time | Dados do seu time em tempo real",
+  "short_name": "Meu Time",
+  "name": "Meu Time | Dados do seu time em tempo real",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#2c7be5",
+  "theme_color": "#0e1129",
   "background_color": "#edf2f9"
 }

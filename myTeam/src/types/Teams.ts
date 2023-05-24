@@ -1,4 +1,4 @@
-import { CountryCode } from "./CountryCode";
+import { CountryCode } from "../features/@core/CountryCode";
 
 export interface Teams {
   id: number;
