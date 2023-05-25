@@ -42,9 +42,11 @@ In this video, we dive into the codebase of the MyTeam project. We explain the p
 This project is built using React, TypeScript, and the following libraries:
 
 - react-router-dom
+- react-icons
 - react-hook-form
 - react-bootstrap bootstrap
 - bootstrap @types/bootstrap
+- process
 
 Make sure these dependencies are installed before running the project.
 

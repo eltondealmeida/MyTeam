@@ -1,11 +1,10 @@
-import { FormProvider, useForm } from "react-hook-form";
 import { SearchTeams } from "./SearchTeams";
+import PageHeader from "./common/page-header/PageHeader";
 
 export default function HomePage() {
-  const hookForm = useForm();
   return (
-    <FormProvider {...hookForm}>
+    <PageHeader>
       <SearchTeams />
-    </FormProvider>
+    </PageHeader>
   );
 }
