@@ -20,14 +20,15 @@ export default function HomePage() {
   const subscriptionPlan =
     watchUser("subscriptionPlan") ?? localStorage.getItem("subscriptionPlan");
   const leagueId = watchTeam("league.id") ?? localStorage.getItem("leagueId");
+  const teamId = watchTeam("id") ?? localStorage.getItem("teamId");
 
   useEffect(() => {
-    if (leagueId) {
+    if (leagueId || teamId) {
       setTotalRequests((prevTotalRequests) =>
         prevTotalRequests ? prevTotalRequests + 1 : 1
       );
     }
-  }, [leagueId]);
+  }, [leagueId, teamId]);
 
   useEffect(() => {
     if (totalRequests) {

@@ -5,19 +5,20 @@ import { CountryCode } from "../../features/@core/CountryCode";
 import { SelectSeason } from "./SelectSeason";
 import { SelectLeague } from "./connected-components/SelectLeague";
 import { SelectCountry } from "./SelectCountry";
+import { SelectTeam } from "./connected-components/SelectTeam";
 
 export function SearchTeam() {
-  const {
-    watch,
-    setValue,
-    formState: { errors },
-  } = useFormContext<Team>();
+  const { watch, setValue } = useFormContext<Team>();
 
   const countryCode = watch("country.code");
   const seasonYear = watch("season.year");
+  const leagueId = watch("league.id");
+  const teamId = watch("id");
 
   const isValidCountry = countryCode !== undefined && countryCode !== null;
   const isValidSeason = seasonYear !== undefined && seasonYear !== null;
+  const isValidLeague = leagueId !== undefined && leagueId !== null;
+  const isValidTeam = teamId !== undefined && teamId !== null;
 
   return (
     <Form>
@@ -30,9 +31,6 @@ export function SearchTeam() {
                 setValue("country.code", option?.value ?? CountryCode.BR)
               }
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.country && errors.country.message}
-            </Form.Control.Feedback>
           </Form.Group>
         </Col>
 
@@ -46,9 +44,6 @@ export function SearchTeam() {
                 setValue("season.year", option?.value ?? 2021)
               }
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.season && errors.season.message}
-            </Form.Control.Feedback>
           </Form.Group>
         </Col>
       </Row>
@@ -61,13 +56,25 @@ export function SearchTeam() {
             countryCode={countryCode}
             seasonYear={seasonYear}
             onChange={(option) => {
-              setValue("league.id", option?.value ?? 2021);
+              setValue("league.id", option?.value ?? 2022);
               localStorage.setItem("leagueId", watch("league.id").toString());
             }}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.league && errors.league.message}
-          </Form.Control.Feedback>
+        </Form.Group>
+      </Collapse>
+
+      <Collapse in={isValidLeague}>
+        <Form.Group className="mt-3">
+          <hr className="text-light" />
+          <Form.Label className="text-light">Selecione o time</Form.Label>
+          <SelectTeam
+            leagueId={leagueId}
+            seasonYear={seasonYear}
+            onChange={(option) => {
+              setValue("id", option?.value ?? 1);
+              localStorage.setItem("teamId", watch("id").toString());
+            }}
+          />
         </Form.Group>
       </Collapse>
     </Form>
