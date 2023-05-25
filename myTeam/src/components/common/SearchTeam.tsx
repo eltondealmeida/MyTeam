@@ -1,12 +1,12 @@
 import { Form, Row, Col, Collapse } from "react-bootstrap";
-import { Team } from "../../../types/Team";
+import { Team } from "../../types/Team";
 import { useFormContext } from "react-hook-form";
-import { SelectCountry } from "./common/SelectCountry";
-import { CountryCode } from "../../../features/@core/CountryCode";
-import { SelectSeasons } from "./common/SelectSeasons";
-import { SelectLeagues } from "./common/connected-components/SelectLeagues";
+import { CountryCode } from "../../features/@core/CountryCode";
+import { SelectSeason } from "./SelectSeason";
+import { SelectLeague } from "./connected-components/SelectLeague";
+import { SelectCountry } from "./SelectCountry";
 
-export function SearchTeams() {
+export function SearchTeam() {
   const {
     watch,
     setValue,
@@ -41,7 +41,7 @@ export function SearchTeams() {
             <Form.Label className="text-light">
               Selecione a temporada
             </Form.Label>
-            <SelectSeasons
+            <SelectSeason
               onChange={(option) =>
                 setValue("season.year", option?.value ?? 2021)
               }
@@ -57,7 +57,17 @@ export function SearchTeams() {
         <Form.Group className="mt-3">
           <hr className="text-light" />
           <Form.Label className="text-light">Selecione a liga</Form.Label>
-          <SelectLeagues countryCode={countryCode} seasonYear={seasonYear} />
+          <SelectLeague
+            countryCode={countryCode}
+            seasonYear={seasonYear}
+            onChange={(option) => {
+              setValue("league.id", option?.value ?? 2021);
+              localStorage.setItem("leagueId", watch("league.id").toString());
+            }}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.league && errors.league.message}
+          </Form.Control.Feedback>
         </Form.Group>
       </Collapse>
     </Form>

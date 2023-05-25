@@ -1,18 +1,39 @@
 import { useFormContext } from "react-hook-form";
+import { useState, useEffect } from "react";
 import { User } from "../../../types/User";
-import { SearchTeams } from "./SearchTeams";
-import PageHeader from "./common/page-header/PageHeader";
-import { Card, Row, Col } from "react-bootstrap";
+import { PageHeader } from "../../common/PageHeader";
+import { Row, Col } from "react-bootstrap";
+import { SearchTeam } from "../../common/SearchTeam";
+import { Team } from "../../../types/Team";
 
 export default function HomePage() {
-  const { watch } = useFormContext<User>();
+  const { watch: watchUser } = useFormContext<User>();
+  const { watch: watchTeam } = useFormContext<Team>();
 
-  const name = watch("name") ?? localStorage.getItem("name");
-  const requests = watch("requests") ?? localStorage.getItem("requests");
+  const [totalRequests, setTotalRequests] = useState<number | undefined>(
+    Number(localStorage.getItem("requests"))
+  );
+
+  const name = watchUser("name") ?? localStorage.getItem("name");
   const limitRequests =
-    watch("limitRequests") ?? localStorage.getItem("limitRequests");
+    watchUser("limitRequests") ?? localStorage.getItem("limitRequests");
   const subscriptionPlan =
-    watch("subscriptionPlan") ?? localStorage.getItem("subscriptionPlan");
+    watchUser("subscriptionPlan") ?? localStorage.getItem("subscriptionPlan");
+  const leagueId = watchTeam("league.id") ?? localStorage.getItem("leagueId");
+
+  useEffect(() => {
+    if (leagueId) {
+      setTotalRequests((prevTotalRequests) =>
+        prevTotalRequests ? prevTotalRequests + 1 : 1
+      );
+    }
+  }, [leagueId]);
+
+  useEffect(() => {
+    if (totalRequests) {
+      localStorage.setItem("requests", String(totalRequests));
+    }
+  }, [totalRequests]);
 
   return (
     <PageHeader enableLogout>
@@ -22,11 +43,11 @@ export default function HomePage() {
             <h5>{`Olá, ${name}`}</h5>
             <p>{`Plano atual: ${subscriptionPlan}.`}</p>
             <p>{`No seu plano, o limite de pesquisas diárias é de: ${limitRequests}.`}</p>
-            <p>{`Pesquisas realizadas hoje: ${requests}.`}</p>
+            <p>{`Pesquisas realizadas hoje: ${totalRequests}.`}</p>
           </div>
         </Col>
         <Col md>
-          <SearchTeams />
+          <SearchTeam />
         </Col>
       </Row>
     </PageHeader>

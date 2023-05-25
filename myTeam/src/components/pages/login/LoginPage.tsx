@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { Button, Collapse, Form, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../home/common/page-header/PageHeader";
+import { PageHeader } from "../../common/PageHeader";
 import { User } from "../../../types/User";
 
 export default function LoginPage() {
@@ -44,20 +44,20 @@ export default function LoginPage() {
         setValue("isLoggedIn", false);
         setAlertStatus("Chave de acesso inválida");
       } else {
-        setValue("name", json.response.account.firstname);
-        setValue("requests", json.response.requests.current);
-        setValue("limitRequests", json.response.requests.limit_day);
-        setValue("subscriptionPlan", json.response.subscription.plan);
         setValue("isLoggedIn", true);
+        setValue("name", json.response.account.firstname);
+        setValue("subscriptionPlan", json.response.subscription.plan);
+        setValue("limitRequests", json.response.requests.limit_day);
+        setValue("requests", json.response.requests.current);
+        localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("name", json.response.account.firstname);
-        localStorage.setItem("requests", json.response.requests.current);
-        localStorage.setItem("limitRequests", json.response.requests.limit_day);
         localStorage.setItem(
           "subscriptionPlan",
           json.response.subscription.plan
         );
+        localStorage.setItem("limitRequests", json.response.requests.limit_day);
+        localStorage.setItem("requests", json.response.requests.current);
         localStorage.setItem("apiKey", watch("apiKey"));
-        localStorage.setItem("isLoggedIn", "true");
         navigate("/home");
       }
     } catch (error) {

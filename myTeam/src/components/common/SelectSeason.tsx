@@ -1,18 +1,18 @@
 import { forwardRef, ForwardRefRenderFunction } from "react";
 import Select, { SingleValue } from "react-select";
 
-export interface SelectSeasonsOption {
+export interface SelectSeasonOption {
   value: number;
   label: string;
 }
 
-export interface SelectSeasonsProps {
-  value?: SelectSeasonsOption;
-  defaultValue?: SelectSeasonsOption;
-  onChange?: (value: SingleValue<SelectSeasonsOption>) => void;
+export interface SelectSeasonProps {
+  value?: SelectSeasonOption;
+  defaultValue?: SelectSeasonOption;
+  onChange?: (value: SingleValue<SelectSeasonOption>) => void;
 }
 
-const SelectSeasonsRef: ForwardRefRenderFunction<any, SelectSeasonsProps> = (
+const SelectSeasonRef: ForwardRefRenderFunction<any, SelectSeasonProps> = (
   { onChange, ...rest },
   ref
 ) => {
@@ -21,12 +21,12 @@ const SelectSeasonsRef: ForwardRefRenderFunction<any, SelectSeasonsProps> = (
     2020, 2021, 2022, 2023, 2024, 2025,
   ];
 
-  const seasonsOptions: SelectSeasonsOption[] = seasons.map((year) => ({
+  const seasonsOptions: SelectSeasonOption[] = seasons.map((year) => ({
     value: year,
     label: year.toString(),
   }));
 
-  function handleChange(value: SingleValue<SelectSeasonsOption>) {
+  function handleChange(value: SingleValue<SelectSeasonOption>) {
     onChange && onChange(value);
   }
 
@@ -43,4 +43,4 @@ const SelectSeasonsRef: ForwardRefRenderFunction<any, SelectSeasonsProps> = (
   );
 };
 
-export const SelectSeasons = forwardRef(SelectSeasonsRef);
+export const SelectSeason = forwardRef(SelectSeasonRef);

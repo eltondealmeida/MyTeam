@@ -1,7 +1,7 @@
 import { forwardRef, ForwardRefRenderFunction } from "react";
 import Select, { SingleValue } from "react-select";
-import { CountryCode } from "../../../../features/@core/CountryCode";
-import { CountryCodeName } from "../../../../features/@core/CountryCodeName";
+import { CountryCodeName } from "../../features/@core/CountryCodeName";
+import { CountryCode } from "../../features/@core/CountryCode";
 
 export interface SelectCountryOption {
   value: CountryCode;

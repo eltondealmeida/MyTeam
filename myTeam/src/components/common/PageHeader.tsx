@@ -2,7 +2,7 @@ import { Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import myTeamLogo from "/public/assets/img/my-team-logo.png";
 import { useForm } from "react-hook-form";
-import { User } from "../../../../../types/User";
+import { User } from "../../types/User";
 import { BsEscape } from "react-icons/bs";
 
 export interface PageHeaderProps {
@@ -10,10 +10,7 @@ export interface PageHeaderProps {
   children: React.ReactNode;
 }
 
-export default function PageHeader({
-  enableLogout,
-  children,
-}: PageHeaderProps) {
+export function PageHeader({ enableLogout, children }: PageHeaderProps) {
   const { watch, setValue } = useForm<User>();
 
   const navigate = useNavigate();

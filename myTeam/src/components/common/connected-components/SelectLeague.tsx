@@ -6,33 +6,34 @@ import {
 } from "react";
 import Select, { SingleValue } from "react-select";
 import { useFormContext } from "react-hook-form";
-import { User } from "../../../../../types/User";
-import { CountryCode } from "../../../../../features/@core/CountryCode";
-import { Season } from "../../../../../types/Season";
-import { Leagues } from "../../../../../types/Leagues";
+import { User } from "../../../types/User";
+import { CountryCode } from "../../../features/@core/CountryCode";
+import { Season } from "../../../types/Season";
+import { Leagues } from "../../../types/Leagues";
 
-export interface SelectLeaguesOption {
+export interface SelectLeagueOption {
   value: number;
   label: string;
 }
 
-export interface SelectLeaguesProps {
+export interface SelectLeagueProps {
   countryCode: CountryCode;
   seasonYear: number;
-  value?: SelectLeaguesOption;
-  defaultValue?: SelectLeaguesOption;
-  onChange?: (value: SingleValue<SelectLeaguesOption>) => void;
+  value?: SelectLeagueOption;
+  defaultValue?: SelectLeagueOption;
+  onChange?: (value: SingleValue<SelectLeagueOption>) => void;
 }
 
-const SelectLeaguesRef: ForwardRefRenderFunction<any, SelectLeaguesProps> = (
+const SelectLeagueRef: ForwardRefRenderFunction<any, SelectLeagueProps> = (
   { countryCode, seasonYear, value, defaultValue, onChange, ...rest },
   ref
 ) => {
   const { watch } = useFormContext<User>();
 
-  const [leagueOptions, setLeagueOptions] = useState<SelectLeaguesOption[]>([]);
-  const [selectedValue, setSelectedValue] =
-    useState<SelectLeaguesOption | null>(value || defaultValue || null);
+  const [leagueOptions, setLeagueOptions] = useState<SelectLeagueOption[]>([]);
+  const [selectedValue, setSelectedValue] = useState<SelectLeagueOption | null>(
+    value || defaultValue || null
+  );
 
   const apiKey = watch("apiKey") ?? localStorage.getItem("apiKey");
 
@@ -64,6 +65,15 @@ const SelectLeaguesRef: ForwardRefRenderFunction<any, SelectLeaguesProps> = (
         }));
 
         setLeagueOptions(leagueOptions);
+
+        if (
+          selectedValue &&
+          !leagueOptions.find(
+            (option: { value: number }) => option.value === selectedValue.value
+          )
+        ) {
+          setSelectedValue(null);
+        }
       } catch (error) {
         console.error("Error fetching leagues:", error);
       }
@@ -72,7 +82,7 @@ const SelectLeaguesRef: ForwardRefRenderFunction<any, SelectLeaguesProps> = (
     fetchLeagues();
   }, [apiKey, countryCode, seasonYear, selectedValue]);
 
-  const handleChange = (value: SingleValue<SelectLeaguesOption>) => {
+  const handleChange = (value: SingleValue<SelectLeagueOption>) => {
     setSelectedValue(value);
     onChange && onChange(value);
   };
@@ -91,4 +101,4 @@ const SelectLeaguesRef: ForwardRefRenderFunction<any, SelectLeaguesProps> = (
   );
 };
 
-export const SelectLeagues = forwardRef(SelectLeaguesRef);
+export const SelectLeague = forwardRef(SelectLeagueRef);
