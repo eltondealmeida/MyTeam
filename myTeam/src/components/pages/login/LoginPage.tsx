@@ -44,7 +44,18 @@ export default function LoginPage() {
         setValue("isLoggedIn", false);
         setAlertStatus("Chave de acesso inválida");
       } else {
+        setValue("name", json.response.account.firstname);
+        setValue("requests", json.response.requests.current);
+        setValue("limitRequests", json.response.requests.limit_day);
+        setValue("subscriptionPlan", json.response.subscription.plan);
         setValue("isLoggedIn", true);
+        localStorage.setItem("name", json.response.account.firstname);
+        localStorage.setItem("requests", json.response.requests.current);
+        localStorage.setItem("limitRequests", json.response.requests.limit_day);
+        localStorage.setItem(
+          "subscriptionPlan",
+          json.response.subscription.plan
+        );
         localStorage.setItem("isLoggedIn", "true");
         navigate("/home");
       }

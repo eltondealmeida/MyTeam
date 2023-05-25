@@ -8,19 +8,21 @@ export function SearchTeams() {
   const { register } = useFormContext<Teams>();
 
   return (
-    <Form.Group>
-      <Form.Label>Pesquisa</Form.Label>
-      <InputGroup className="w-50 mx-auto mb-3 text-center">
-        <Form.Control
-          placeholder="Pesquisa time"
-          className="text-center"
-          type="text"
-          {...register("name")}
-        />
-        <Button variant="outline-primary">
-          <BsSearch />
-        </Button>
-      </InputGroup>
-    </Form.Group>
+    <Form>
+      <Form.Group>
+        <Form.Label>Pesquisa</Form.Label>
+        <InputGroup className="w-75 mx-auto mb-3 text-center">
+          <Form.Control
+            placeholder="Pesquisa time"
+            className="text-center"
+            type="text"
+            {...register("name")}
+          />
+          <Button variant="outline-primary">
+            <BsSearch />
+          </Button>
+        </InputGroup>
+      </Form.Group>
+    </Form>
   );
 }
