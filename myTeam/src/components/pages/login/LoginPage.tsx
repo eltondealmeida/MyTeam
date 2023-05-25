@@ -19,11 +19,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [alertStatus, setAlertStatus] = useState<string | null>(null);
 
-  const onSubmit = async (data: User) => {
+  const onSubmit = async () => {
     setIsLoading(true);
 
     const myHeaders = new Headers();
-    myHeaders.append("x-rapidapi-key", data.apiKey);
+    myHeaders.append("x-rapidapi-key", watch("apiKey"));
     myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
 
     const requestOptions: RequestInit & { redirect?: RequestRedirect } = {
@@ -45,6 +45,7 @@ export default function LoginPage() {
         setAlertStatus("Chave de acesso inválida");
       } else {
         setValue("isLoggedIn", true);
+        localStorage.setItem("isLoggedIn", "true");
         navigate("/home");
       }
     } catch (error) {
