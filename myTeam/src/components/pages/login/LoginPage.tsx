@@ -56,6 +56,7 @@ export default function LoginPage() {
           "subscriptionPlan",
           json.response.subscription.plan
         );
+        localStorage.setItem("apiKey", watch("apiKey"));
         localStorage.setItem("isLoggedIn", "true");
         navigate("/home");
       }
