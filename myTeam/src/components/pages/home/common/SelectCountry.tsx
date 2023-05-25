@@ -23,9 +23,9 @@ const SelectCountryRef: ForwardRefRenderFunction<any, SelectCountryProps> = (
     label: CountryCodeName[country as keyof typeof CountryCodeName],
   }));
 
-  const handleChange = (value: SingleValue<SelectCountryOption>) => {
+  function handleChange(value: SingleValue<SelectCountryOption>) {
     onChange && onChange(value);
-  };
+  }
 
   return (
     <Select

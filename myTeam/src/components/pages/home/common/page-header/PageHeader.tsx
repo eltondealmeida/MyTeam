@@ -52,7 +52,7 @@ export default function PageHeader({
         )}
       </Card.Header>
       <Card.Body style={{ backgroundColor: "#204a6f" }} className="text-center">
-        <div className="m-3">{children}</div>
+        {children}
       </Card.Body>
     </Card>
   );

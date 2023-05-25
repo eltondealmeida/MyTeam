@@ -6,4 +6,5 @@ export interface Teams {
   description: string;
   league: string;
   country: CountryCode;
+  season: number;
 }
