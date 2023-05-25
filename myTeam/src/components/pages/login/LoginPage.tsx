@@ -74,7 +74,7 @@ export default function LoginPage() {
     <PageHeader>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group controlId="apiKey" className="text-center mb-3">
-          <Form.Label>Chave de acesso</Form.Label>
+          <h5 className="text-light">Chave de acesso</h5>
           <Form.Control
             type="text"
             placeholder="Digite sua chave de acesso"

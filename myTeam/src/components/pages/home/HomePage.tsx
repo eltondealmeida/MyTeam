@@ -17,7 +17,7 @@ export default function HomePage() {
   return (
     <PageHeader enableLogout>
       <Row className="g-3">
-        <Col md={2} className="border rounded border-2">
+        <Col md={2} className="border rounded border-2 text-light">
           <div className="m-2">
             <h5>{`Olá, ${name}`}</h5>
             <p>{`Plano atual: ${subscriptionPlan}.`}</p>

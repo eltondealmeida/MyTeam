@@ -1,27 +1,29 @@
-import { Form } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import { Teams } from "../../../types/Teams";
 import { useFormContext } from "react-hook-form";
-import { InputGroup, Button } from "react-bootstrap";
-import { BsSearch } from "react-icons/bs";
+import { SelectCountry } from "./common/SelectCountry";
+import { CountryCode } from "../../../features/@core/CountryCode";
 
 export function SearchTeams() {
-  const { register } = useFormContext<Teams>();
+  const {
+    setValue,
+    formState: { errors },
+  } = useFormContext<Teams>();
 
   return (
     <Form>
       <Form.Group>
-        <Form.Label>Pesquisa</Form.Label>
-        <InputGroup className="w-75 mx-auto mb-3 text-center">
-          <Form.Control
-            placeholder="Pesquisa time"
-            className="text-center"
-            type="text"
-            {...register("name")}
+        <InputGroup>
+          <Form.Label>Selecione o País:</Form.Label>
+          <SelectCountry
+            onChange={(option) =>
+              setValue("country", option?.value ?? CountryCode.BR)
+            }
           />
-          <Button variant="outline-primary">
-            <BsSearch />
-          </Button>
         </InputGroup>
+        <Form.Control.Feedback type="invalid">
+          {errors.country && errors.country.message}
+        </Form.Control.Feedback>
       </Form.Group>
     </Form>
   );

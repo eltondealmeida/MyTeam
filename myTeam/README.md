@@ -47,6 +47,7 @@ This project is built using React, TypeScript, and the following libraries:
 - react-bootstrap bootstrap
 - bootstrap @types/bootstrap
 - process
+- react-select
 
 Make sure these dependencies are installed before running the project.
 
