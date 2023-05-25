@@ -5,6 +5,7 @@ import { PageHeader } from "../../common/PageHeader";
 import { Row, Col } from "react-bootstrap";
 import { SearchTeam } from "../../common/SearchTeam";
 import { Team } from "../../../types/Team";
+import { TeamDetails } from "../../common/connected-components/TeamDetails";
 
 export default function HomePage() {
   const { watch: watchUser } = useFormContext<User>();
@@ -21,6 +22,8 @@ export default function HomePage() {
     watchUser("subscriptionPlan") ?? localStorage.getItem("subscriptionPlan");
   const leagueId = watchTeam("league.id") ?? localStorage.getItem("leagueId");
   const teamId = watchTeam("id") ?? localStorage.getItem("teamId");
+  const seasonYear =
+    watchTeam("season.year") ?? localStorage.getItem("seasonYear");
 
   useEffect(() => {
     if (leagueId || teamId) {
@@ -49,6 +52,13 @@ export default function HomePage() {
         </Col>
         <Col md>
           <SearchTeam />
+          {watchTeam("id") && (
+            <TeamDetails
+              teamId={teamId}
+              seasonYear={seasonYear}
+              leagueId={leagueId}
+            />
+          )}
         </Col>
       </Row>
     </PageHeader>

@@ -13,12 +13,10 @@ export function SearchTeam() {
   const countryCode = watch("country.code");
   const seasonYear = watch("season.year");
   const leagueId = watch("league.id");
-  const teamId = watch("id");
 
   const isValidCountry = countryCode !== undefined && countryCode !== null;
   const isValidSeason = seasonYear !== undefined && seasonYear !== null;
   const isValidLeague = leagueId !== undefined && leagueId !== null;
-  const isValidTeam = teamId !== undefined && teamId !== null;
 
   return (
     <Form>

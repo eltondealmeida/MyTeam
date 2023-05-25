@@ -48,6 +48,8 @@ This project is built using React, TypeScript, and the following libraries:
 - bootstrap @types/bootstrap
 - process
 - react-select
+- react-chartjs-2
+- chartjs-adapter-moment
 
 Make sure these dependencies are installed before running the project.
 
