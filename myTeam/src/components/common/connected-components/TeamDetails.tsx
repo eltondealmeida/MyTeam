@@ -1,36 +1,46 @@
 import { useEffect, useState } from "react";
-import { TeamStatistics } from "../../../types/TeamStatistics";
-import { Player } from "../../../types/Player";
-import { User } from "../../../types/User";
 import { useFormContext } from "react-hook-form";
-import { Chart } from "react-chartjs-2";
+import Chart from "chart.js/auto";
+import { Doughnut } from "react-chartjs-2";
+import Flex from "../Flex";
+import { TeamStatistics } from "../../../types/TeamStatistics";
+
+import { User } from "../../../types/User";
+import { Players } from "../../../types/Players";
+import { Col } from "react-bootstrap";
 
 interface TeamDetailsProps {
   teamId: number;
   seasonYear: number;
   leagueId: number;
+  teamName: string;
+  teamLogo: string;
+  leagueName: string;
+  leagueLogo: string;
 }
 
 export function TeamDetails({
   teamId,
   seasonYear,
   leagueId,
+  teamName,
+  teamLogo,
+  leagueName,
+  leagueLogo,
 }: TeamDetailsProps) {
   const { watch } = useFormContext<User>();
 
-  const [players, setPlayers] = useState<Player[] | undefined>([]);
-  const [formation, setFormation] = useState<string | undefined>("");
-  const [results, setResults] = useState<TeamStatistics["results"] | undefined>(
-    {
-      totalGames: 0,
-      totalWins: 0,
-      totalLosses: 0,
-      totalDraws: 0,
-    }
+  const [players, setPlayers] = useState<Players[]>([]);
+  const [bestFormation, setBestFormation] = useState<string>("");
+  const [results, setResults] = useState<TeamStatistics["results"]>({
+    totalGames: 0,
+    totalWins: 0,
+    totalLosses: 0,
+    totalDraws: 0,
+  });
+  const [goalsByTime, setGoalsByTime] = useState<TeamStatistics["goalsByTime"]>(
+    []
   );
-  const [goalsByTime, setGoalsByTime] = useState<
-    TeamStatistics["goalsByTime"] | undefined
-  >([]);
 
   const apiKey = watch("apiKey") ?? localStorage.getItem("apiKey");
 
@@ -67,9 +77,27 @@ export function TeamDetails({
           }
         );
         const data = await response.json();
-        setFormation(data.response.formation);
-        setResults(data.response.results);
-        setGoalsByTime(data.response.goalsByTime);
+
+        if (data.response) {
+          const mostPlayedFormation = data.response.lineups.reduce(
+            (prev: { played: number }, current: { played: number }) => {
+              return prev.played > current.played ? prev : current;
+            }
+          );
+
+          setBestFormation(mostPlayedFormation.formation);
+          setResults(data.response.results);
+          setGoalsByTime(data.response.goalsByTime);
+        } else {
+          setBestFormation("");
+          setResults({
+            totalGames: 0,
+            totalWins: 0,
+            totalLosses: 0,
+            totalDraws: 0,
+          });
+          setGoalsByTime([]);
+        }
       } catch (error) {
         console.error("Error fetching team statistics:", error);
       }
@@ -77,50 +105,167 @@ export function TeamDetails({
 
     fetchPlayers();
     fetchTeamStatistics();
-  }, [apiKey, teamId, seasonYear, leagueId]);
+  }, [teamId, seasonYear, leagueId, apiKey]);
+
+  useEffect(() => {
+    if (goalsByTime && goalsByTime.length > 0) {
+      const data = {
+        labels: goalsByTime.map((goal) => goal.time),
+        datasets: [
+          {
+            label: "Porcentagem de gols",
+            data: goalsByTime.map((goal) => goal.percentage),
+            backgroundColor: "rgba(75,192,192,0.2)",
+            borderColor: "rgba(75,192,192,1)",
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const goalsByTimeChart = document.getElementById(
+        "goalsByTimeChart"
+      ) as HTMLCanvasElement;
+      if (goalsByTimeChart) {
+        const ctx = goalsByTimeChart.getContext("2d");
+        if (ctx) {
+          new Chart(ctx, {
+            type: "bar",
+            data: data,
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  title: {
+                    display: true,
+                    text: "Porcentagem (%)",
+                  },
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: "Tempo",
+                  },
+                },
+              },
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                title: {
+                  display: true,
+                  text: "Gols por Tempo",
+                },
+              },
+            },
+          });
+        }
+      }
+    }
+  }, [goalsByTime]);
 
   return (
-    <div>
-      <h2>Detalhes do Time</h2>
-      <h3>Jogadores:</h3>
-      <ul>
-        {players &&
-          players.map((player) => (
-            <li key={player.id}>
-              Nome: {player.name}, Idade: {player.age}, Nacionalidade:
-              {player.nationality}
-            </li>
-          ))}
-      </ul>
+    <div className="border rounded border-2 text-light">
+      <h2 className="mt-2 mb-3">Detalhes do time</h2>
 
-      <h3>Estatísticas:</h3>
-      {results && (
-        <div>
-          <p>Formação: {formation}</p>
-          <p>Total de jogos: {results.totalGames}</p>
-          <p>Total de vitórias: {results.totalWins}</p>
-          <p>Total de derrotas: {results.totalLosses}</p>
-          <p>Total de empates: {results.totalDraws}</p>
+      <Flex justifyContent="center">
+        <div className=" mb-1 me-4">
+          <img src={leagueLogo} alt={leagueName} width="50" height="50" />
+          <p>{leagueName}</p>
         </div>
+        <div className="mb-1">
+          <img src={teamLogo} alt={teamName} width="50" height="50" />
+          <p>{teamName}</p>
+        </div>
+      </Flex>
+      <div className="mb-1">
+        <p>Melhor formação: {bestFormation}</p>
+      </div>
+
+      <Flex justifyContent="center" className="mb-3">
+        <Col md={6} className="border rounded border-2 d-flex flex-column">
+          <h3 className="m-3">Jogadores</h3>
+          {players &&
+            players.map((player) => (
+              <Flex
+                justifyContent="start"
+                key={player.player.id}
+                className="ms-5"
+              >
+                <div className="me-2">
+                  <img
+                    src={player.player.photo}
+                    alt={player.player.name}
+                    width="30"
+                    height="30"
+                  />
+                </div>
+                <div>
+                  <p key={player.player.id} className="text-start">
+                    Nome: {player.player.name}, Idade: {player.player.age},
+                    Nacionalidade: {player.player.nationality}
+                  </p>
+                </div>
+              </Flex>
+            ))}
+        </Col>
+      </Flex>
+
+      {results && (
+        <>
+          <h4>Estatísticas do time</h4>
+          <p>Total de jogos: {results.totalGames}</p>
+          <p>Vitórias: {results.totalWins}</p>
+          <p>Derrotas: {results.totalLosses}</p>
+          <p>Empates: {results.totalDraws}</p>
+        </>
       )}
 
-      <h3>Gols por tempo de jogo:</h3>
-      {goalsByTime && goalsByTime.length > 0 && (
-        <Chart
-          type="bar"
-          data={{
-            labels: goalsByTime.map((item) => `${item.time}'`),
-            datasets: [
-              {
-                label: "Gols Marcados por Tempo de Jogo",
-                data: goalsByTime.map((item) => item.goals),
-                backgroundColor: "rgba(75,192,192,0.2)",
-                borderColor: "rgba(75,192,192,1)",
-                borderWidth: 1,
+      {goalsByTime && goalsByTime.length > 0 ? (
+        <div>
+          <h4>Gols por tempo</h4>
+          <Doughnut
+            data={{
+              labels: goalsByTime.map((goal) => goal.time),
+              datasets: [
+                {
+                  label: "Porcentagem de gols",
+                  data: goalsByTime.map((goal) => goal.percentage),
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                  ],
+                  borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                title: {
+                  display: true,
+                  text: "Gols por Tempo",
+                },
               },
-            ],
-          }}
-        />
+            }}
+          />
+        </div>
+      ) : (
+        <p>Não há dados de gols por tempo disponíveis.</p>
       )}
     </div>
   );

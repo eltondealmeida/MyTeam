@@ -9,4 +9,5 @@ export interface Team {
   league: League;
   country: Country;
   season: Season;
+  logo: string;
 }

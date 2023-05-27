@@ -45,12 +45,12 @@ export default function LoginPage() {
         setAlertStatus("Chave de acesso inválida");
       } else {
         setValue("isLoggedIn", true);
-        setValue("name", json.response.account.firstname);
+        setValue("userName", json.response.account.firstname);
         setValue("subscriptionPlan", json.response.subscription.plan);
         setValue("limitRequests", json.response.requests.limit_day);
         setValue("requests", json.response.requests.current);
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("name", json.response.account.firstname);
+        localStorage.setItem("userName", json.response.account.firstname);
         localStorage.setItem(
           "subscriptionPlan",
           json.response.subscription.plan

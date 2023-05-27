@@ -9,5 +9,6 @@ export interface TeamStatistics {
   goalsByTime: {
     time: number;
     goals: number;
+    percentage: number;
   }[];
 }

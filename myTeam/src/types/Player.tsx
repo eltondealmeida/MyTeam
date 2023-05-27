@@ -3,4 +3,5 @@ export interface Player {
   name: string;
   age: number;
   nationality: string;
+  photo: string;
 }

@@ -1,7 +1,7 @@
 import { UniqueId } from "../features/@core/UniqueId";
 
 export interface User {
-  name: string;
+  userName: string;
   apiKey: UniqueId;
   limitRequests: number;
   requests: number;

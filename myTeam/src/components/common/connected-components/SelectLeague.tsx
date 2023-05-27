@@ -10,6 +10,7 @@ import { User } from "../../../types/User";
 import { CountryCode } from "../../../features/@core/CountryCode";
 import { Season } from "../../../types/Season";
 import { Leagues } from "../../../types/Leagues";
+import { Team } from "../../../types/Team";
 
 export interface SelectLeagueOption {
   value: number;
@@ -29,6 +30,7 @@ const SelectLeagueRef: ForwardRefRenderFunction<any, SelectLeagueProps> = (
   ref
 ) => {
   const { watch } = useFormContext<User>();
+  const { setValue } = useFormContext<Team>();
 
   const [leagueOptions, setLeagueOptions] = useState<SelectLeagueOption[]>([]);
   const [selectedValue, setSelectedValue] = useState<SelectLeagueOption | null>(
@@ -66,6 +68,17 @@ const SelectLeagueRef: ForwardRefRenderFunction<any, SelectLeagueProps> = (
 
         setLeagueOptions(leagueOptions);
 
+        const leagueNameAndLogo = data.response.find(
+          (league: Leagues) => league.league.id === selectedValue?.value
+        );
+
+        if (leagueNameAndLogo) {
+          setValue("league.name", leagueNameAndLogo.league.name);
+          localStorage.setItem("leagueName", leagueNameAndLogo.league.name);
+          setValue("league.logo", leagueNameAndLogo.league.logo);
+          localStorage.setItem("leagueLogo", leagueNameAndLogo.league.logo);
+        }
+
         if (
           selectedValue &&
           !leagueOptions.find(
@@ -80,7 +93,7 @@ const SelectLeagueRef: ForwardRefRenderFunction<any, SelectLeagueProps> = (
     };
 
     fetchLeagues();
-  }, [apiKey, countryCode, seasonYear, selectedValue]);
+  }, [apiKey, countryCode, seasonYear, selectedValue, setValue]);
 
   const handleChange = (value: SingleValue<SelectLeagueOption>) => {
     setSelectedValue(value);

@@ -7,6 +7,7 @@ import {
 import Select, { SingleValue } from "react-select";
 import { useFormContext } from "react-hook-form";
 import { User } from "../../../types/User";
+import { Team } from "../../../types/Team";
 
 export interface SelectTeamOption {
   value: number;
@@ -26,6 +27,7 @@ const SelectTeamRef: ForwardRefRenderFunction<any, SelectTeamProps> = (
   ref
 ) => {
   const { watch } = useFormContext<User>();
+  const { setValue } = useFormContext<Team>();
 
   const [teamOptions, setTeamOptions] = useState<SelectTeamOption[]>([]);
   const [selectedValue, setSelectedValue] = useState<SelectTeamOption | null>(
@@ -55,6 +57,17 @@ const SelectTeamRef: ForwardRefRenderFunction<any, SelectTeamProps> = (
         }));
 
         setTeamOptions(teamOptions);
+
+        const teamNameAndLogo = data.response.find(
+          (team: any) => team.team.id === selectedValue?.value
+        );
+
+        if (teamNameAndLogo) {
+          setValue("name", teamNameAndLogo.team.name);
+          localStorage.setItem("teamName", teamNameAndLogo.team.name);
+          setValue("logo", teamNameAndLogo.team.logo);
+          localStorage.setItem("teamLogo", teamNameAndLogo.team.logo);
+        }
 
         if (
           selectedValue &&
