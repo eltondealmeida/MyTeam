@@ -43,6 +43,9 @@ export default function LoginPage() {
       if (json.errors && json.errors.token) {
         setValue("isLoggedIn", false);
         setAlertStatus("Chave de acesso inválida");
+      } else if (json.response && json.response.subscription.active === false) {
+        setValue("isLoggedIn", false);
+        setAlertStatus("Sua assinatura está inativa");
       } else {
         setValue("isLoggedIn", true);
         setValue("userName", json.response.account.firstname);
