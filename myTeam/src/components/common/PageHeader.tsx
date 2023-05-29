@@ -7,10 +7,15 @@ import { BsEscape } from "react-icons/bs";
 
 export interface PageHeaderProps {
   enableLogout?: boolean;
+  forceLogout?: boolean;
   children: React.ReactNode;
 }
 
-export function PageHeader({ enableLogout, children }: PageHeaderProps) {
+export function PageHeader({
+  enableLogout,
+  forceLogout,
+  children,
+}: PageHeaderProps) {
   const { watch, setValue } = useForm<User>();
 
   const navigate = useNavigate();
@@ -19,6 +24,7 @@ export function PageHeader({ enableLogout, children }: PageHeaderProps) {
     setValue("isLoggedIn", false);
     localStorage.removeItem("isLoggedIn");
     navigate("/login");
+    forceLogout && window.location.reload();
   }
 
   return (

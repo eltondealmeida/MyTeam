@@ -3,11 +3,12 @@ import { useFormContext } from "react-hook-form";
 import Chart from "chart.js/auto";
 import { Doughnut } from "react-chartjs-2";
 import Flex from "../Flex";
-import { TeamStatistics } from "../../../types/TeamStatistics";
 
 import { User } from "../../../types/User";
 import { Players } from "../../../types/Players";
-import { Col } from "react-bootstrap";
+import { Col, Table } from "react-bootstrap";
+import { TeamStatisticsFixtures } from "../../../types/TeamStatisticsFixtures";
+import { TeamStatisticsGoalsByTime } from "../../../types/TeamStatisticsGoalsByTime";
 
 interface TeamDetailsProps {
   teamId: number;
@@ -32,13 +33,8 @@ export function TeamDetails({
 
   const [players, setPlayers] = useState<Players[]>([]);
   const [bestFormation, setBestFormation] = useState<string>("");
-  const [results, setResults] = useState<TeamStatistics["results"]>({
-    totalGames: 0,
-    totalWins: 0,
-    totalLosses: 0,
-    totalDraws: 0,
-  });
-  const [goalsByTime, setGoalsByTime] = useState<TeamStatistics["goalsByTime"]>(
+  const [fixtures, setFixtures] = useState<TeamStatisticsFixtures | null>(null);
+  const [goalsByTime, setGoalsByTime] = useState<TeamStatisticsGoalsByTime[]>(
     []
   );
 
@@ -85,17 +81,23 @@ export function TeamDetails({
             }
           );
 
+          const goalsByTimeData: TeamStatisticsGoalsByTime[] =
+            data.response.goals.for.minute.map(
+              (item: {
+                [key: string]: { total: number; percentage: string };
+              }) => {
+                const time = Object.keys(item)[0];
+                const { total, percentage } = item[time];
+                return { time, goals: { total, percentage } };
+              }
+            );
+
+          setGoalsByTime(goalsByTimeData);
           setBestFormation(mostPlayedFormation.formation);
-          setResults(data.response.results);
-          setGoalsByTime(data.response.goalsByTime);
+          setFixtures(data.response.fixtures);
         } else {
           setBestFormation("");
-          setResults({
-            totalGames: 0,
-            totalWins: 0,
-            totalLosses: 0,
-            totalDraws: 0,
-          });
+          setFixtures(null);
           setGoalsByTime([]);
         }
       } catch (error) {
@@ -114,7 +116,7 @@ export function TeamDetails({
         datasets: [
           {
             label: "Porcentagem de gols",
-            data: goalsByTime.map((goal) => goal.percentage),
+            data: goalsByTime.map((goal) => goal.goals.percentage),
             backgroundColor: "rgba(75,192,192,0.2)",
             borderColor: "rgba(75,192,192,1)",
             borderWidth: 1,
@@ -152,10 +154,6 @@ export function TeamDetails({
               plugins: {
                 legend: {
                   position: "top",
-                },
-                title: {
-                  display: true,
-                  text: "Gols por Tempo",
                 },
               },
             },
@@ -212,61 +210,81 @@ export function TeamDetails({
         </Col>
       </Flex>
 
-      {results && (
-        <>
-          <h4>Estatísticas do time</h4>
-          <p>Total de jogos: {results.totalGames}</p>
-          <p>Vitórias: {results.totalWins}</p>
-          <p>Derrotas: {results.totalLosses}</p>
-          <p>Empates: {results.totalDraws}</p>
-        </>
-      )}
+      <Flex justifyContent="center" className="mb-3">
+        <Col md={6} className="border rounded border-2 d-flex flex-column">
+          <h3 className="m-3">Estatísticas do time</h3>
+          {fixtures ? (
+            <Table
+              className="text-light"
+              style={{ backgroundColor: "#0e1129" }}
+            >
+              <thead>
+                <tr>
+                  <th>Total de jogos</th>
+                  <th>Vitórias</th>
+                  <th>Derrotas</th>
+                  <th>Empates</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{fixtures.played.total}</td>
+                  <td>{fixtures.wins.total}</td>
+                  <td>{fixtures.loses.total}</td>
+                  <td>{fixtures.draws.total}</td>
+                </tr>
+              </tbody>
+            </Table>
+          ) : (
+            <p>Não há estatísticas do time disponíveis.</p>
+          )}
+        </Col>
+      </Flex>
 
-      {goalsByTime && goalsByTime.length > 0 ? (
-        <div>
-          <h4>Gols por tempo</h4>
-          <Doughnut
-            data={{
-              labels: goalsByTime.map((goal) => goal.time),
-              datasets: [
-                {
-                  label: "Porcentagem de gols",
-                  data: goalsByTime.map((goal) => goal.percentage),
-                  backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(153, 102, 255, 0.2)",
-                  ],
-                  borderColor: [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(153, 102, 255, 1)",
-                  ],
-                  borderWidth: 1,
+      <Flex justifyContent="center" className="mb-3">
+        <Col md={6} className="border rounded border-2 d-flex flex-column">
+          <h3 className="m-3">Gols marcados por tempo de jogo</h3>
+          {goalsByTime && goalsByTime.length > 0 ? (
+            <Doughnut
+              className="m-3"
+              data={{
+                labels: goalsByTime.map((goal) => goal.time),
+                datasets: [
+                  {
+                    label: "Porcentagem de gols",
+                    data: goalsByTime.map((goal) => goal.goals.percentage),
+                    backgroundColor: [
+                      "rgba(255, 99, 132, 0.2)",
+                      "rgba(54, 162, 235, 0.2)",
+                      "rgba(255, 206, 86, 0.2)",
+                      "rgba(75, 192, 192, 0.2)",
+                      "rgba(153, 102, 255, 0.2)",
+                    ],
+                    borderColor: [
+                      "rgba(255, 99, 132, 1)",
+                      "rgba(54, 162, 235, 1)",
+                      "rgba(255, 206, 86, 1)",
+                      "rgba(75, 192, 192, 1)",
+                      "rgba(153, 102, 255, 1)",
+                    ],
+                    borderWidth: 1,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                  },
                 },
-              ],
-            }}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: "top",
-                },
-                title: {
-                  display: true,
-                  text: "Gols por Tempo",
-                },
-              },
-            }}
-          />
-        </div>
-      ) : (
-        <p>Não há dados de gols por tempo disponíveis.</p>
-      )}
+              }}
+            />
+          ) : (
+            <p>Não há dados de gols por tempo disponíveis.</p>
+          )}
+        </Col>
+      </Flex>
     </div>
   );
 }

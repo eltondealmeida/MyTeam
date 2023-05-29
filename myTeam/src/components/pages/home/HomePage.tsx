@@ -49,7 +49,10 @@ export default function HomePage() {
   }, [totalRequests]);
 
   return (
-    <PageHeader enableLogout>
+    <PageHeader
+      enableLogout
+      forceLogout={totalRequests ? totalRequests > 100 : false}
+    >
       <Row className="g-3 m-1">
         <Col
           md={2}
@@ -64,6 +67,9 @@ export default function HomePage() {
           </div>
         </Col>
         <Col md>
+          {totalRequests && totalRequests > 100 && (
+            <p className="text-danger">Limite de pesquisas atingido!</p>
+          )}
           <SearchTeam />
         </Col>
       </Row>
