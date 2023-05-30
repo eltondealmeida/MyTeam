@@ -1,38 +1,32 @@
 import { useFormContext } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { User } from "../../../types/User";
 import { PageHeader } from "../../common/PageHeader";
 import { Row, Col } from "react-bootstrap";
 import { SearchTeam } from "../../common/SearchTeam";
-import { Team } from "../../../types/Team";
 import { TeamDetails } from "../../common/connected-components/TeamDetails";
 
 export default function HomePage() {
-  const { watch: watchUser } = useFormContext<User>();
-  const { watch: watchTeam } = useFormContext<Team>();
+  const { watch } = useFormContext();
 
   const [totalRequests, setTotalRequests] = useState<number | undefined>(
     Number(localStorage.getItem("requests"))
   );
 
   //User data
-  const userName = watchUser("userName") ?? localStorage.getItem("userName");
+  const userName = watch("userName") ?? localStorage.getItem("userName");
   const limitRequests =
-    watchUser("limitRequests") ?? localStorage.getItem("limitRequests");
+    watch("limitRequests") ?? localStorage.getItem("limitRequests");
   const subscriptionPlan =
-    watchUser("subscriptionPlan") ?? localStorage.getItem("subscriptionPlan");
+    watch("subscriptionPlan") ?? localStorage.getItem("subscriptionPlan");
 
   //Team data
-  const seasonYear =
-    watchTeam("season.year") ?? localStorage.getItem("seasonYear");
-  const leagueId = watchTeam("league.id") ?? localStorage.getItem("leagueId");
-  const leagueName =
-    watchTeam("league.name") ?? localStorage.getItem("leagueName");
-  const leagueLogo =
-    watchTeam("league.logo") ?? localStorage.getItem("leagueLogo");
-  const teamId = watchTeam("id") ?? localStorage.getItem("teamId");
-  const teamName = watchTeam("name") ?? localStorage.getItem("teamName");
-  const teamLogo = watchTeam("logo") ?? localStorage.getItem("teamLogo");
+  const seasonYear = watch("season.year") ?? localStorage.getItem("seasonYear");
+  const leagueId = watch("league.id") ?? localStorage.getItem("leagueId");
+  const leagueName = watch("league.name") ?? localStorage.getItem("leagueName");
+  const leagueLogo = watch("league.logo") ?? localStorage.getItem("leagueLogo");
+  const teamId = watch("id") ?? localStorage.getItem("teamId");
+  const teamName = watch("name") ?? localStorage.getItem("teamName");
+  const teamLogo = watch("logo") ?? localStorage.getItem("teamLogo");
 
   useEffect(() => {
     if (leagueId || teamId) {
@@ -73,7 +67,7 @@ export default function HomePage() {
           <SearchTeam />
         </Col>
       </Row>
-      {watchTeam("id") && (
+      {watch("id") && (
         <div className="mt-3">
           <TeamDetails
             teamId={teamId}

@@ -9,6 +9,7 @@ import { Players } from "../../../types/Players";
 import { Col, Table } from "react-bootstrap";
 import { TeamStatisticsFixtures } from "../../../types/TeamStatisticsFixtures";
 import { TeamStatisticsGoalsByTime } from "../../../types/TeamStatisticsGoalsByTime";
+import { TeamStatisticsGoalData } from "../../../types/TeamStatisticsGoalData";
 
 interface TeamDetailsProps {
   teamId: number;
@@ -33,10 +34,21 @@ export function TeamDetails({
 
   const [players, setPlayers] = useState<Players[]>([]);
   const [bestFormation, setBestFormation] = useState<string>("");
-  const [fixtures, setFixtures] = useState<TeamStatisticsFixtures | null>(null);
-  const [goalsByTime, setGoalsByTime] = useState<TeamStatisticsGoalsByTime[]>(
-    []
-  );
+  const [fixtures, setFixtures] = useState<TeamStatisticsFixtures>({
+    played: { total: 0 },
+    wins: { total: 0 },
+    draws: { total: 0 },
+    loses: { total: 0 },
+  });
+  const [goalsByTime, setGoalsByTime] = useState<TeamStatisticsGoalsByTime[]>([
+    {
+      time: "",
+      goals: {
+        total: 0,
+        percentage: "",
+      },
+    },
+  ]);
 
   const apiKey = watch("apiKey") ?? localStorage.getItem("apiKey");
 
@@ -44,7 +56,7 @@ export function TeamDetails({
     const fetchPlayers = async () => {
       try {
         const response = await fetch(
-          `https://v3.football.api-sports.io/players?team=${teamId}&season=${seasonYear}&league=${leagueId}`,
+          `https://v3.football.api-sports.io/players?team=${teamId}&season=${seasonYear}`,
           {
             method: "GET",
             headers: {
@@ -74,39 +86,40 @@ export function TeamDetails({
         );
         const data = await response.json();
 
-        if (data.response) {
-          const mostPlayedFormation = data.response.lineups.reduce(
-            (prev: { played: number }, current: { played: number }) => {
-              return prev.played > current.played ? prev : current;
-            }
-          );
+        const mostPlayedFormation = data.response.lineups.reduce(
+          (prev: { played: number }, current: { played: number }) => {
+            const prevPlayed = Number(prev.played);
+            const currentPlayed = Number(current.played);
+            return prevPlayed > currentPlayed ? prev : current;
+          }
+        );
+        setBestFormation(mostPlayedFormation.formation);
 
-          const goalsByTimeData: TeamStatisticsGoalsByTime[] =
-            data.response.goals.for.minute.map(
-              (item: {
-                [key: string]: { total: number; percentage: string };
-              }) => {
-                const time = Object.keys(item)[0];
-                const { total, percentage } = item[time];
-                return { time, goals: { total, percentage } };
-              }
-            );
+        setFixtures({
+          played: { total: data.response.fixtures.played.total },
+          wins: { total: data.response.fixtures.wins.total },
+          draws: { total: data.response.fixtures.draws.total },
+          loses: { total: data.response.fixtures.loses.total },
+        });
 
-          setGoalsByTime(goalsByTimeData);
-          setBestFormation(mostPlayedFormation.formation);
-          setFixtures(data.response.fixtures);
-        } else {
-          setBestFormation("");
-          setFixtures(null);
-          setGoalsByTime([]);
-        }
+        const goalsByTimeData: TeamStatisticsGoalData =
+          data.response.goals.for.minute;
+        const transformedData: TeamStatisticsGoalsByTime[] = Object.keys(
+          goalsByTimeData
+        ).map((time) => ({
+          time,
+          goals: goalsByTimeData[time],
+        }));
+        setGoalsByTime(transformedData);
       } catch (error) {
         console.error("Error fetching team statistics:", error);
       }
     };
 
-    fetchPlayers();
-    fetchTeamStatistics();
+    if (apiKey && teamId && seasonYear && leagueId) {
+      fetchPlayers();
+      fetchTeamStatistics();
+    }
   }, [teamId, seasonYear, leagueId, apiKey]);
 
   useEffect(() => {
@@ -116,9 +129,21 @@ export function TeamDetails({
         datasets: [
           {
             label: "Porcentagem de gols",
-            data: goalsByTime.map((goal) => goal.goals.percentage),
-            backgroundColor: "rgba(75,192,192,0.2)",
-            borderColor: "rgba(75,192,192,1)",
+            data: goalsByTime.map((goal) => goal.goals.total),
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.5)",
+              "rgba(54, 162, 235, 0.5)",
+              "rgba(255, 206, 86, 0.5)",
+              "rgba(75, 192, 192, 0.5)",
+              "rgba(153, 102, 255, 0.5)",
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+            ],
             borderWidth: 1,
           },
         ],
@@ -131,25 +156,9 @@ export function TeamDetails({
         const ctx = goalsByTimeChart.getContext("2d");
         if (ctx) {
           new Chart(ctx, {
-            type: "bar",
+            type: "doughnut",
             data: data,
             options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  max: 100,
-                  title: {
-                    display: true,
-                    text: "Porcentagem (%)",
-                  },
-                },
-                x: {
-                  title: {
-                    display: true,
-                    text: "Tempo",
-                  },
-                },
-              },
               responsive: true,
               plugins: {
                 legend: {
@@ -252,13 +261,13 @@ export function TeamDetails({
                 datasets: [
                   {
                     label: "Porcentagem de gols",
-                    data: goalsByTime.map((goal) => goal.goals.percentage),
+                    data: goalsByTime.map((goal) => goal.goals.total),
                     backgroundColor: [
-                      "rgba(255, 99, 132, 0.2)",
-                      "rgba(54, 162, 235, 0.2)",
-                      "rgba(255, 206, 86, 0.2)",
-                      "rgba(75, 192, 192, 0.2)",
-                      "rgba(153, 102, 255, 0.2)",
+                      "rgba(255, 99, 132, 0.5)",
+                      "rgba(54, 162, 235, 0.5)",
+                      "rgba(255, 206, 86, 0.5)",
+                      "rgba(75, 192, 192, 0.5)",
+                      "rgba(153, 102, 255, 0.5)",
                     ],
                     borderColor: [
                       "rgba(255, 99, 132, 1)",

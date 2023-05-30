@@ -8,6 +8,7 @@ import Select, { SingleValue } from "react-select";
 import { useFormContext } from "react-hook-form";
 import { User } from "../../../types/User";
 import { Team } from "../../../types/Team";
+import { Teams } from "../../../types/Teams";
 
 export interface SelectTeamOption {
   value: number;
@@ -26,8 +27,7 @@ const SelectTeamRef: ForwardRefRenderFunction<any, SelectTeamProps> = (
   { leagueId, seasonYear, value, defaultValue, onChange, ...rest },
   ref
 ) => {
-  const { watch } = useFormContext<User>();
-  const { setValue } = useFormContext<Team>();
+  const { watch, setValue } = useFormContext();
 
   const [teamOptions, setTeamOptions] = useState<SelectTeamOption[]>([]);
   const [selectedValue, setSelectedValue] = useState<SelectTeamOption | null>(
@@ -51,7 +51,7 @@ const SelectTeamRef: ForwardRefRenderFunction<any, SelectTeamProps> = (
         );
         const data = await response.json();
 
-        const teamOptions = data.response.map((team: any) => ({
+        const teamOptions = data.response.map((team: Teams) => ({
           value: team.team.id,
           label: team.team.name,
         }));
@@ -59,7 +59,7 @@ const SelectTeamRef: ForwardRefRenderFunction<any, SelectTeamProps> = (
         setTeamOptions(teamOptions);
 
         const teamNameAndLogo = data.response.find(
-          (team: any) => team.team.id === selectedValue?.value
+          (team: Teams) => team.team.id === selectedValue?.value
         );
 
         if (teamNameAndLogo) {
@@ -85,7 +85,7 @@ const SelectTeamRef: ForwardRefRenderFunction<any, SelectTeamProps> = (
     if (leagueId && apiKey) {
       fetchTeams();
     }
-  }, [leagueId, apiKey, selectedValue, seasonYear]);
+  }, [leagueId, apiKey, selectedValue, seasonYear, setValue]);
 
   const handleChange = (value: SingleValue<SelectTeamOption>) => {
     setSelectedValue(value);

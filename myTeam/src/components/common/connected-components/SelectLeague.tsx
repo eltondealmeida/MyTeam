@@ -29,8 +29,7 @@ const SelectLeagueRef: ForwardRefRenderFunction<any, SelectLeagueProps> = (
   { countryCode, seasonYear, value, defaultValue, onChange, ...rest },
   ref
 ) => {
-  const { watch } = useFormContext<User>();
-  const { setValue } = useFormContext<Team>();
+  const { watch, setValue } = useFormContext();
 
   const [leagueOptions, setLeagueOptions] = useState<SelectLeagueOption[]>([]);
   const [selectedValue, setSelectedValue] = useState<SelectLeagueOption | null>(
