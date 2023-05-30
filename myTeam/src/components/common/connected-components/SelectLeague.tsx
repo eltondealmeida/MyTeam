@@ -6,11 +6,9 @@ import {
 } from "react";
 import Select, { SingleValue } from "react-select";
 import { useFormContext } from "react-hook-form";
-import { User } from "../../../types/User";
 import { CountryCode } from "../../../features/@core/CountryCode";
 import { Season } from "../../../types/Season";
 import { Leagues } from "../../../types/Leagues";
-import { Team } from "../../../types/Team";
 
 export interface SelectLeagueOption {
   value: number;

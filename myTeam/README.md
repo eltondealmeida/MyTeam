@@ -4,7 +4,7 @@ Welcome to MyTeam! This project allows you to access information about Football 
 
 ## Project Overview
 
-[Video: UI/UX Overview](link_para_o_video_1)
+[Video: UI/UX Overview](https://vimeo.com/831615662)
 
 In this video, we provide an overview of the user interface and user experience of the MyTeam application. We explain the main features, navigation, and design choices to provide a seamless experience for users.
 
@@ -33,7 +33,7 @@ To get started with MyTeam, follow these steps:
 
 ## Code Explanation
 
-[Video: Code Explanation](link_para_o_video_2)
+[Video: Code Explanation](https://vimeo.com/831557883)
 
 In this video, we dive into the codebase of the MyTeam project. We explain the project structure, key components, and how different parts of the application are implemented. This video provides insights into the development process and helps you understand the code behind the application.
 

@@ -6,8 +6,6 @@ import {
 } from "react";
 import Select, { SingleValue } from "react-select";
 import { useFormContext } from "react-hook-form";
-import { User } from "../../../types/User";
-import { Team } from "../../../types/Team";
 import { Teams } from "../../../types/Teams";
 
 export interface SelectTeamOption {
