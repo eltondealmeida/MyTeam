@@ -21,15 +21,10 @@ To get started with MyTeam, follow these steps:
 - Register for an account on the RapidAPI website (https://rapidapi.com)
 - Obtain your API key from the RapidAPI developer dashboard
 
-4. Configure the API key:
+4. Start the development server: `npm run dev`
 
-- Open the `.env` file in the project root directory
-- Replace `YOUR_API_KEY_HERE` with your actual API key
-
-5. Start the development server: `npm start`
-
-6. Access the application:
-   Open your web browser and navigate to `http://localhost:3000` to view the MyTeam application.
+5. Access the application:
+   Open your web browser and navigate to `http://127.0.0.1:5173/login` to view the MyTeam application.
 
 ## Code Explanation
 
@@ -59,15 +54,3 @@ Make sure these dependencies are installed before running the project.
 MyTeam uses the API key provided by the RapidAPI service. You need to obtain an API key and configure it in the project to access the API-Football endpoints.
 
 Please refer to the [API-Football Documentation](https://api-football-v1.p.rapidapi.com/v3/) for more information on how to obtain and use the API key.
-
-## Contributing
-
-If you would like to contribute to MyTeam, please follow these steps:
-
-1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Commit and push your changes to your forked repository
-5. Open a pull request to the main repository
-
-We appreciate any contributions to improve the project!
