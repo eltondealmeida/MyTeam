@@ -4,7 +4,7 @@ Welcome to MyTeam! This project allows you to access information about Football 
 
 ## Project Overview
 
-[Video: UI/UX Overview]([https://vimeo.com/831615662](https://www.loom.com/share/7deda62305f44a43b9f99c5979edeaa8?sid=43ddeea4-fa9f-4d72-b5d9-80e0e6de793b))
+[Video: UI/UX Overview](https://www.loom.com/share/7deda62305f44a43b9f99c5979edeaa8?sid=43ddeea4-fa9f-4d72-b5d9-80e0e6de793b)
 
 In this video, we provide an overview of the user interface and user experience of the MyTeam application. We explain the main features, navigation, and design choices to provide a seamless experience for users.
 
