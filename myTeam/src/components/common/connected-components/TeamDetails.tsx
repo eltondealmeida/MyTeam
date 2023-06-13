@@ -10,6 +10,7 @@ import { Col, Table } from "react-bootstrap";
 import { TeamStatisticsFixtures } from "../../../types/TeamStatisticsFixtures";
 import { TeamStatisticsGoalsByTime } from "../../../types/TeamStatisticsGoalsByTime";
 import { TeamStatisticsGoalData } from "../../../types/TeamStatisticsGoalData";
+import { useMediaQuery } from "react-responsive";
 
 interface TeamDetailsProps {
   teamId: number;
@@ -31,6 +32,8 @@ export function TeamDetails({
   leagueLogo,
 }: TeamDetailsProps) {
   const { watch } = useFormContext<User>();
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const [players, setPlayers] = useState<Players[]>([]);
   const [bestFormation, setBestFormation] = useState<string>("");
@@ -173,7 +176,7 @@ export function TeamDetails({
   }, [goalsByTime]);
 
   return (
-    <div className="border rounded border-2 text-light">
+    <div className={`text-light ${!isMobile && "border rounded border-2"}`}>
       <h2 className="mt-2 mb-3">Detalhes do time</h2>
 
       <Flex justifyContent="center">
@@ -191,7 +194,12 @@ export function TeamDetails({
       </div>
 
       <Flex justifyContent="center" className="mb-3">
-        <Col md={6} className="border rounded border-2 d-flex flex-column">
+        <Col
+          md={6}
+          className={`d-flex flex-column ${
+            isMobile ? "align-items-center" : "border rounded border-2"
+          }`}
+        >
           <h3 className="m-3">Jogadores</h3>
           {players &&
             players.map((player) => (
@@ -220,30 +228,39 @@ export function TeamDetails({
       </Flex>
 
       <Flex justifyContent="center" className="mb-3">
-        <Col md={6} className="border rounded border-2 d-flex flex-column">
+        <Col
+          md={6}
+          className={`d-flex flex-column ${
+            isMobile ? "align-items-center" : "border rounded border-2"
+          }`}
+        >
           <h3 className="m-3">Estatísticas do time</h3>
           {fixtures ? (
-            <Table
-              className="text-light"
-              style={{ backgroundColor: "#0e1129" }}
-            >
-              <thead>
-                <tr>
-                  <th>Total de jogos</th>
-                  <th>Vitórias</th>
-                  <th>Derrotas</th>
-                  <th>Empates</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{fixtures.played.total}</td>
-                  <td>{fixtures.wins.total}</td>
-                  <td>{fixtures.loses.total}</td>
-                  <td>{fixtures.draws.total}</td>
-                </tr>
-              </tbody>
-            </Table>
+            <div className={`text-light ${isMobile ? "table-responsive" : ""}`}>
+              <Table
+                className={`text-light ${isMobile ? "mx-auto" : ""}`}
+                style={{
+                  backgroundColor: "#0e1129",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th>Total de jogos</th>
+                    <th>Vitórias</th>
+                    <th>Derrotas</th>
+                    <th>Empates</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{fixtures.played.total}</td>
+                    <td>{fixtures.wins.total}</td>
+                    <td>{fixtures.loses.total}</td>
+                    <td>{fixtures.draws.total}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </div>
           ) : (
             <p>Não há estatísticas do time disponíveis.</p>
           )}
@@ -251,11 +268,16 @@ export function TeamDetails({
       </Flex>
 
       <Flex justifyContent="center" className="mb-3">
-        <Col md={6} className="border rounded border-2 d-flex flex-column">
+        <Col
+          md={6}
+          className={`d-flex flex-column ${
+            isMobile ? "align-items-center" : "border rounded border-2"
+          }`}
+        >
           <h3 className="m-3">Gols marcados por tempo de jogo</h3>
           {goalsByTime && goalsByTime.length > 0 ? (
             <Doughnut
-              className="m-3"
+              className={`m-3 ${isMobile ? "mx-auto" : ""}`}
               data={{
                 labels: goalsByTime.map((goal) => goal.time),
                 datasets: [

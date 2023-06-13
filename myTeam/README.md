@@ -46,6 +46,7 @@ This project is built using React, TypeScript, and the following libraries:
 - react-chartjs-2
 - chartjs-adapter-moment
 - chart.js
+- react-responsive
 
 Make sure these dependencies are installed before running the project.
 

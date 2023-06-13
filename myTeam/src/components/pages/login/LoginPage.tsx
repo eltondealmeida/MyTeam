@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../../common/PageHeader";
 import { User } from "../../../types/User";
+import { useMediaQuery } from "react-responsive";
 
 export default function LoginPage() {
   const {
@@ -15,6 +16,9 @@ export default function LoginPage() {
   } = useFormContext<User>();
 
   const navigate = useNavigate();
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   const [showVideo, setShowVideo] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [alertStatus, setAlertStatus] = useState<string | null>(null);
@@ -82,7 +86,7 @@ export default function LoginPage() {
           <Form.Control
             type="text"
             placeholder="Digite sua chave de acesso"
-            className="w-50 mx-auto mb-3 text-center"
+            className="w-75 mx-auto mb-3 text-center"
             {...register("apiKey", { required: true })}
             isInvalid={!!errors.apiKey}
           />
@@ -94,7 +98,7 @@ export default function LoginPage() {
           {alertStatus && <p className="fs--1 text-danger">{alertStatus}</p>}
           <Button
             variant="outline-light"
-            className="w-50 mx-auto"
+            className="w-75 mx-auto"
             type="submit"
             disabled={isLoading}
           >
@@ -117,14 +121,22 @@ export default function LoginPage() {
         <Form.Group>
           <Collapse in={showVideo}>
             <div id="collapse">
-              <div id="video-collapse">
+              <div
+                id="video-collapse"
+                className="embed-responsive embed-responsive-16by9"
+              >
                 <iframe
                   src="https://player.vimeo.com/video/829670979?h=19d7d2154f&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-                  width="500"
-                  height="300"
+                  width={isMobile ? "100%" : "500"}
+                  height={isMobile ? "auto" : "300"}
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
                   title="Como obter a chave de acesso para Meu Time"
+                  className={`embed-responsive-item ${
+                    isMobile
+                      ? "embed-responsive-1by1"
+                      : "embed-responsive-16by9"
+                  }`}
                 />
               </div>
               <Button
@@ -132,7 +144,7 @@ export default function LoginPage() {
                 href="https://dashboard.api-football.com/register"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-50 mx-auto text-light"
+                className="w-75 mx-auto text-light"
               >
                 Cadastre-se na API-Football
               </Button>

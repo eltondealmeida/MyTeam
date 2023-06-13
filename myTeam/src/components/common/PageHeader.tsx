@@ -4,6 +4,7 @@ import myTeamLogo from "/public/assets/img/my-team-logo.png";
 import { useForm } from "react-hook-form";
 import { User } from "../../types/User";
 import { BsEscape } from "react-icons/bs";
+import { useMediaQuery } from "react-responsive";
 
 export interface PageHeaderProps {
   enableLogout?: boolean;
@@ -17,6 +18,8 @@ export function PageHeader({
   children,
 }: PageHeaderProps) {
   const { watch, setValue } = useForm<User>();
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const navigate = useNavigate();
 
@@ -38,15 +41,18 @@ export function PageHeader({
         <img
           src={myTeamLogo}
           alt="Meu Time"
-          className="me-2"
-          width={400}
-          height={200}
+          className="mt-3 me-3"
           onClick={() => navigate(watch("isLoggedIn") ? "/home" : "/login")}
+          style={
+            isMobile
+              ? { maxWidth: "90%", height: "auto" }
+              : { maxWidth: "30%", height: "auto" }
+          }
         />
         {enableLogout && (
           <Button
             variant="link"
-            className="text-light"
+            className={`text-light ${isMobile ? "mt-2" : ""}`}
             onClick={handleLogout}
             style={{ position: "absolute", right: 0, top: 0 }}
           >
