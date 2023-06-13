@@ -8,15 +8,10 @@ import { useMediaQuery } from "react-responsive";
 
 export interface PageHeaderProps {
   enableLogout?: boolean;
-  forceLogout?: boolean;
   children: React.ReactNode;
 }
 
-export function PageHeader({
-  enableLogout,
-  forceLogout,
-  children,
-}: PageHeaderProps) {
+export function PageHeader({ enableLogout, children }: PageHeaderProps) {
   const { watch, setValue } = useForm<User>();
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -26,8 +21,8 @@ export function PageHeader({
   function handleLogout() {
     setValue("isLoggedIn", false);
     localStorage.removeItem("isLoggedIn");
-    navigate("/login");
-    forceLogout && window.location.reload();
+    navigate("/");
+    window.location.reload();
   }
 
   return (

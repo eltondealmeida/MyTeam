@@ -11,7 +11,6 @@ export default function AppRoutes() {
 
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-  const patch = "*" || "/home" || "/login";
   const element =
     watch("isLoggedIn") === true || isLoggedIn === "true" ? (
       <HomePage />
@@ -36,7 +35,10 @@ export default function AppRoutes() {
 
   return (
     <Routes>
-      <Route path={patch} element={element} />
+      <Route path="*" element={element} />
+      <Route path="/" element={element} />
+      <Route path="/login" element={element} />
+      <Route path="/home" element={element} />
     </Routes>
   );
 }

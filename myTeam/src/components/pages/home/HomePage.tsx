@@ -43,10 +43,7 @@ export default function HomePage() {
   }, [totalRequests]);
 
   return (
-    <PageHeader
-      enableLogout
-      forceLogout={totalRequests ? totalRequests > 100 : false}
-    >
+    <PageHeader enableLogout>
       <Row className="g-3 m-1">
         <Col
           md={2}
